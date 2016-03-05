@@ -24,4 +24,23 @@ sel = sel(1:100);
 displayData(X(sel, :));
 
 fprintf('Program paused. Press enter to continue.\n');
-pause;
+
+fprintf('\nLoading Saved Neural Network Parameters ...\n')
+
+% Load the weights into variables Theta1 and Theta2
+load('ex4weights.mat');
+
+% Unroll parameters
+nn_params = [Theta1(:) ; Theta2(:)];
+
+
+fprintf('\nFeedforward Using Neural Network ...\n')
+lambda = 0;
+
+J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, ...
+                   num_labels, X, y, lambda);
+
+fprintf(['Cost at parameters (loaded from ex4weights): %f '...
+         '\n(this value should be about 0.287629)\n'], J);
+
+fprintf('\nProgram paused. Press enter to continue.\n');
