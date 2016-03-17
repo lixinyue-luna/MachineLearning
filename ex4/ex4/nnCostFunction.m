@@ -16,8 +16,6 @@ function [J grad] = nnCostFunction(nn_params, ...
 
 % Reshape nn_params back into the parameters Theta1 and Theta2, the weight matrices
 % for our 2 layer neural network
-% Theta1 is 25*401, Theta2 is 10*26
-
 Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
                  hidden_layer_size, (input_layer_size + 1));
 
@@ -29,8 +27,8 @@ m = size(X, 1);
 
 % You need to return the following variables correctly
 J = 0;
-Theta1_grad = zeros(size(Theta1));
-Theta2_grad = zeros(size(Theta2));
+Theta1_grad = zeros(size(Theta1));  % 25*401
+Theta2_grad = zeros(size(Theta2));  % 10*26
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
@@ -40,6 +38,7 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
+%
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -54,6 +53,7 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the
 %               first time.
+%
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -88,6 +88,8 @@ Theta2_reg = Theta2(:, (2:end));  % 10*25
 reg_term = sum(sum(Theta1_reg.^2))+sum(sum(Theta2_reg.^2));
 J = J + reg_term*lambda/(2*m);
 
+
+
 % Backpropagation
 % Initialize accumulative gradient
 for t=1:m
@@ -103,8 +105,23 @@ for t=1:m
     Theta2_grad += delta3' * a2_t;    %  10*26
 end
 
-Theta1_grad = Theta1_grad./m;
-Theta2_grad = Theta2_grad./m;
+Theta1_grad = Theta1_grad./m + [zeros(size(Theta1), 1), Theta1(:, 2:end)].*(lambda/m);
+Theta2_grad = Theta2_grad./m + [zeros(size(Theta2), 1), Theta2(:, 2:end)].*(lambda/m);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 % -------------------------------------------------------------
