@@ -88,7 +88,23 @@ Theta2_reg = Theta2(:, (2:end));  % 10*25
 reg_term = sum(sum(Theta1_reg.^2))+sum(sum(Theta2_reg.^2));
 J = J + reg_term*lambda/(2*m);
 
+% Backpropagation
+% Initialize accumulative gradient
+for t=1:m
+    a1_t = a1(t,:);   % t-th training example, 1*401
+    z2_t = a1_t * Theta1';  % 1*25
+    a2_t = sigmoid(z2_t);   % hidden layer, 1*25
+    a2_t = [1, a2_t]; % hidden layer, 1*26
+    z3_t = a2_t * Theta2';  % 1*10
+    a3_t = sigmoid(z3_t);  % output, 1*10
+    delta3 = a3_t - yy(t,:);    % 1*10
+    delta2 = delta3 * Theta2 .*sigmoidGradient([1, z2_t]);    %  1*26
+    Theta1_grad += delta2(2:end)' * a1_t;   % 25*401
+    Theta2_grad += delta3' * a2_t;    %  10*26
+end
 
+Theta1_grad = Theta1_grad./m;
+Theta2_grad = Theta2_grad./m;
 
 
 % -------------------------------------------------------------
