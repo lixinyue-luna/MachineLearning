@@ -82,7 +82,11 @@ end
 
 J = -J/m;
 
-
+% Regularization
+Theta1_reg = Theta1(:, (2:end));  % 25*400
+Theta2_reg = Theta2(:, (2:end));  % 10*25
+reg_term = sum(sum(Theta1_reg.^2))+sum(sum(Theta2_reg.^2));
+J = J + reg_term*lambda/(2*m);
 
 
 
