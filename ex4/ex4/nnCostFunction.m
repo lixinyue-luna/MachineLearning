@@ -40,21 +40,6 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-
-a1 = [ones(m,1), X];    % a1 is m*401
-a2 = sigmoid(a1*Theta1');  % a2 is m*25
-a2 = [ones(m,1), a2];  % a2 is m*26
-a3 = sigmoid(a2*Theta2');  % a3 is m*10, a3 is h(x)
-temp_y = zeros(num_labels, 1);
-
-for i = 1:num_labels,
-    y = temp_y;
-    y(i) = 1;
-    J = J - sum(log(a3)*y+log(1-a3)*(1-y));
-end
-
-J = J/m;
-
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -69,7 +54,6 @@ J = J/m;
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the
 %               first time.
-%
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -78,18 +62,25 @@ J = J/m;
 %               and Theta2_grad from Part 2.
 %
 
+a1 = [ones(m,1), X];    % a1 is m*401
+z2 = a1*Theta1';  % z2 is m*25
+a2 = sigmoid(z2);  % a2 is m*25
+a2 = [ones(m,1), a2];  % a2 is m*26
+z3 = a2*Theta2';
+a3 = sigmoid(z3);  % a3 is m*10, a3 is h(x)
+a31 = log(a3);
+a32 = log(1-a3);
+Y = eye(num_labels);  % reference book of label to matrix recoding for y
+yy = zeros(m, num_labels);  % The recoded y matrix, m*10
 
+% Recode the labels as vectors
+for i = 1:m
+    res = y(i);  % res from 1 to 10
+    yy(i,:) = Y(res,:);
+    J += a31(i,:)*yy(i,:)'+a32(i,:)*(1-yy(i,:))';
+end
 
-
-
-
-
-
-
-
-
-
-
+J = -J/m;
 
 
 
